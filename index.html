@@ -27,15 +27,9 @@
 
         numArray = range(0, 88); // 0~87 숫자배열
         beforArray = [];
+        beforNumArray = [];
         noteArray = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
-        audioArray = [];
-        for(let i = 1;i<=88;i++){
-            audioArray.push(new Audio("pitchtest/sound ("+i+").wav"));
-            audioArray[i-1].volume = 0.5;
-        }
-
-        console.log(audioArray)
 
         function returnRandomArr(num, arr){
             const tempArr = arr.slice();
@@ -52,9 +46,9 @@
 
         function randomPlay(){
 
-            for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                audioArray[beforArray[i]].pause();
-                audioArray[beforArray[i]].currentTime = 0;
+            for(let i = 0; i<beforArray.length; i++){
+                beforArray[i].pause();
+                beforArray[i].currentTime = 0;
             }
 
             const noteNumEl = document.getElementById("noteNum");
@@ -71,14 +65,22 @@
             const label = document.getElementById("answerLabel");
             label.textContent = "실행하세용";
 
+            const audioArray = [];
+
+            for(let i = 0; i<nums.length; i++){ // 랜덤 숫자에 맞는 오디오 삽입
+                audioArray.push(new Audio("pitchtest/sound ("+nums[i]+").wav"))
+                audioArray[i].volume = 0.5;
+            }
+
+            for(let i = 0; i<nums.length; i++){
+                audioArray[i].play();
+            }
+
             console.log(nums)
 
-            beforArray = nums.slice();
+            beforArray = audioArray.slice();
+            beforNumArray = nums.slice();
 
-            for(let i = 0; i<nums.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                audioArray[nums[i]].play();
-            }
-            
         }
 
         function repeat(){
@@ -87,21 +89,21 @@
                 return;
             }
 
-            for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                audioArray[beforArray[i]].pause();
-                audioArray[beforArray[i]].currentTime = 0;
+            for(let i = 0; i<beforArray.length; i++){
+                beforArray[i].pause();
+                beforArray[i].currentTime = 0;
             }
 
             for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                audioArray[beforArray[i]].play();
+                beforArray[i].play();
             }
         }
         
         function show(){
             const label = document.getElementById("answerLabel");
             answerText = '';
-            for(let i = 0; i<beforArray.length;i++){
-                answerText += noteArray[beforArray[i]%12]+parseInt((beforArray[i]+9)/12) + " ";
+            for(let i = 0; i<beforNumArray.length;i++){
+                answerText += noteArray[beforNumArray[i]%12]+parseInt((beforNumArray[i]+9)/12) + " ";
             }
             label.textContent = answerText;
         }
