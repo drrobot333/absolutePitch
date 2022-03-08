@@ -25,9 +25,17 @@
         btn3 = document.getElementById("answer");
         btn3.addEventListener('click', show);
 
-        numArray = range(1, 9); // 1~8 숫자배열
+        numArray = range(0, 88); // 0~87 숫자배열
         beforArray = [];
-        noteArray = ['도', '레', '미', '파', '솔', '라', '시', '도'];
+        noteArray = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+
+        audioArray = [];
+        for(let i = 1;i<=88;i++){
+            audioArray.push(new Audio("pitchtest/sound ("+i+").wav"));
+            audioArray[i-1].volume = 0.5;
+        }
+
+        console.log(audioArray)
 
         function returnRandomArr(num, arr){
             const tempArr = arr.slice();
@@ -37,34 +45,38 @@
                 let j = Math.floor(Math.random() * tempArr.length);
                 [tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]];
             }
-            return tempArr.slice(0, num).sort();
+            return tempArr.slice(0, num).sort(function(left, right){
+                return left-right;
+            });
         }
 
         function randomPlay(){
+
+            for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
+                audioArray[beforArray[i]].pause();
+                audioArray[beforArray[i]].currentTime = 0;
+            }
+
             const noteNumEl = document.getElementById("noteNum");
             noteNum = noteNumEl.value;
             if (isNaN(noteNum) || noteNum==""){
                 alert("숫자를 입력하세용");
                 return
             }
-            else if(noteNum > 8 || noteNum < 1){
-                alert("1에서 8사이의 숫자를 입력하세요");
+            else if(noteNum > 88 || noteNum < 1){
+                alert("1에서 88사이의 숫자를 입력하세요");
                 return
             }
             const nums = returnRandomArr(noteNum, numArray); // 랜덤 숫자 주루룩 있는 배열
             const label = document.getElementById("answerLabel");
             label.textContent = "실행하세용";
 
-            beforArray = nums.slice();
-            const arr = new Array(nums.length); // 오디오 파일 저장할 어레이 미리 선언
-            for(let i = 0; i<nums.length; i++){ // 랜덤 숫자에 맞는 오디오 저장
-                arr[i] = new Audio("sounds/sound"+nums[i]+".mp3");
-                arr[i].volume = 0.5;
-            }
+            console.log(nums)
 
+            beforArray = nums.slice();
 
             for(let i = 0; i<nums.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                arr[i].play();
+                audioArray[nums[i]].play();
             }
             
         }
@@ -74,14 +86,14 @@
                 alert("이전에 실행한 소리가 없습니다.");
                 return;
             }
-            const arr = new Array(beforArray.length); // 오디오 파일 저장할 어레이 미리 선언
-            for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 저장
-                arr[i] = new Audio("sounds/sound"+beforArray[i]+".mp3");
-                arr[i].volume = 0.5;
+
+            for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
+                audioArray[beforArray[i]].pause();
+                audioArray[beforArray[i]].currentTime = 0;
             }
 
             for(let i = 0; i<beforArray.length; i++){ // 랜덤 숫자에 맞는 오디오 플레이
-                arr[i].play();
+                audioArray[beforArray[i]].play();
             }
         }
         
@@ -89,7 +101,7 @@
             const label = document.getElementById("answerLabel");
             answerText = '';
             for(let i = 0; i<beforArray.length;i++){
-                answerText += noteArray[beforArray[i] - 1]+" ";
+                answerText += noteArray[beforArray[i]%12]+parseInt((beforArray[i]+9)/12) + " ";
             }
             label.textContent = answerText;
         }
